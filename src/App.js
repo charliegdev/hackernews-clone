@@ -18,14 +18,18 @@ const list = [
   },
 ];
 
-const ReactItem = ({ item }) => {
-  const { title, author, num_comments, points } = item;
-  return <li>{title} - {author} - {num_comments} - {points}</li>;
+const ReactItem = ({ item, onClickFunc }) => {
+  const { title, author, num_comments, points, objectID } = item;
+  return (
+    <li>{title} - {author} - {num_comments} - {points} 
+      <button onClick={onClickFunc.bind(undefined, objectID)}>Remove Item</button> 
+    </li>
+  );
 };
 
-const ReactList = ({ list }) => {
+const ReactList = ({ list, onClickFunc }) => {
   const listItems = list.map(item => {
-    return <ReactItem key={item.objectID} item={item}/>;
+    return <ReactItem key={item.objectID} item={item} onClickFunc={onClickFunc} />;
   });
   return <ul>{listItems}</ul>;
 };
@@ -49,8 +53,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <ReactList list={this.state.list} />
-        <button onClick={this.removeItem.bind(this, 1)}>Delete 1</button>
+        <ReactList list={this.state.list} onClickFunc={this.removeItem} />
       </div>
     );
   }
