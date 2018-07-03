@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 
 const App = () => {
-  const message = "Welcome to React Charlie!"
+  const message = "Welcome to React!"
   return (
     <div className="App">
       <header className="App-header">
