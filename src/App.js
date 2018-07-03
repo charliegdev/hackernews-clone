@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
 const list = [
   {
     title: 'React',
@@ -20,10 +18,15 @@ const list = [
   },
 ];
 
-const ReactItem = ({ title }) => <li>{title}</li>;
+const ReactItem = ({ item }) => {
+  const { title, author, num_comments, points } = item;
+  return <li>{title} - {author} - {num_comments} - {points}</li>;
+};
 
 const ReactList = ({ list }) => {
-  const listItems = list.map(item => <ReactItem key={item.objectID} title={item.title}/>)
+  const listItems = list.map(item => {
+    return <ReactItem key={item.objectID} item={item}/>;
+  });
   return <ul>{listItems}</ul>;
 };
 
@@ -34,18 +37,20 @@ class App extends Component {
     this.state = {
       list
     };
+
+    this.removeItem = this.removeItem.bind(this);
   }
+
+  removeItem(id) {
+    const updatedList = this.state.list.filter(item => item.objectID !== id);
+    this.setState({ list: updatedList });
+  }
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React!</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <div>
         <ReactList list={this.state.list} />
+        <button onClick={this.removeItem.bind(this, 1)}>Delete 1</button>
       </div>
     );
   }
