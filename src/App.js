@@ -34,6 +34,35 @@ const ReactList = ({ list, onClickFunc }) => {
   return <ul>{listItems}</ul>;
 };
 
+class Clock extends Component {
+  constructor(props) {
+    super(props);
+      this.state = {
+        date: new Date().toLocaleTimeString()
+      };
+  }
+
+  componentDidMount() {
+    this.timerID = setInterval(() => { this.tick(); }, 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+
+  tick() {
+    this.setState({ date: new Date().toLocaleTimeString() });
+  }
+
+  render() {
+    return (
+      <div>
+        <span>{this.state.date}</span>
+      </div>
+    )
+  }
+}
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -54,6 +83,7 @@ class App extends Component {
     return (
       <div>
         <ReactList list={this.state.list} onClickFunc={this.removeItem} />
+        <Clock />
       </div>
     );
   }
