@@ -34,12 +34,15 @@ const ReactList = ({ list, onClickFunc }) => {
   return <ul>{listItems}</ul>;
 };
 
+const isSearched = searchTerm => item => item.title.toLowerCase().includes(searchTerm.toLowerCase());
+
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      list
+      list,
+      searchTerm: ""
     };
 
     this.removeItem = this.removeItem.bind(this);
@@ -50,10 +53,18 @@ class App extends Component {
     this.setState({ list: updatedList });
   }
 
+  onSearchChange = event => {
+    this.setState({ searchTerm: event.target.value });
+  }
+
   render() {
     return (
       <div>
-        <ReactList list={this.state.list} onClickFunc={this.removeItem} />
+        <form>
+          <input type="text" onChange={this.onSearchChange} />
+        </form>
+        <span>{this.state.searchTerm}</span>
+        <ReactList list={this.state.list.filter(isSearched(this.state.searchTerm))} onClickFunc={this.removeItem} />
       </div>
     );
   }
