@@ -62,13 +62,15 @@ class Clock extends Component {
     )
   }
 }
+const isSearched = searchTerm => item => item.title.toLowerCase().includes(searchTerm.toLowerCase());
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      list
+      list,
+      searchTerm: ""
     };
 
     this.removeItem = this.removeItem.bind(this);
@@ -79,11 +81,23 @@ class App extends Component {
     this.setState({ list: updatedList });
   }
 
+  onSearchChange = event => {
+    this.setState({ searchTerm: event.target.value });
+  }
+
   render() {
     return (
       <div>
+<<<<<<< HEAD
         <ReactList list={this.state.list} onClickFunc={this.removeItem} />
         <Clock />
+=======
+        <form>
+          <input type="text" onChange={this.onSearchChange} />
+        </form>
+        <span>{this.state.searchTerm}</span>
+        <ReactList list={this.state.list.filter(isSearched(this.state.searchTerm))} onClickFunc={this.removeItem} />
+>>>>>>> d8172cfca5b0d597743add0d509641596b4e7fd8
       </div>
     );
   }
