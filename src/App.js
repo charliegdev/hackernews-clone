@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import Clock from './Clock';
+
 const list = [
   {
     title: 'React',
@@ -18,6 +20,7 @@ const list = [
   },
 ];
 
+/*
 const ReactItem = ({ item, onClickFunc }) => {
   const { title, author, num_comments, points, objectID } = item;
   return (
@@ -26,44 +29,39 @@ const ReactItem = ({ item, onClickFunc }) => {
     </li>
   );
 };
+*/
 
-const ReactList = ({ list, onClickFunc }) => {
-  const listItems = list.map(item => {
-    return <ReactItem key={item.objectID} item={item} onClickFunc={onClickFunc} />;
-  });
-  return <ul className="ui list">{listItems}</ul>;
-};
-
-class Clock extends Component {
-  constructor(props) {
-    super(props);
-      this.state = {
-        date: new Date().toLocaleTimeString()
-      };
-  }
-
-  componentDidMount() {
-    this.timerID = setInterval(() => { this.tick(); }, 1000);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.timerID);
-  }
-
-  tick() {
-    this.setState({ date: new Date().toLocaleTimeString() });
-  }
-
-  render() {
-    return (
-      <div className="ui segment">
-        <h2 className="ui header">Current Time</h2>
-        <span>{this.state.date}</span>
-      </div>
-    )
-  }
-}
 const isSearched = searchTerm => item => item.title.toLowerCase().includes(searchTerm.toLowerCase());
+
+const Search = ({ value, onChange }) =>
+  <div className="ui icon input">
+    <input type="text" placeholder="Search..." value={value} onChange={onChange} />
+    <i className="search icon"></i>
+  </div>
+
+const Table = ({ list, pattern, onDismiss }) =>
+  <table className="ui celled padded table">
+    <thead>
+      <tr>
+        <th className="single line">Title</th>
+        <th>Author</th>
+        <th>Comment</th>
+        <th>Points</th>
+        <th>Action</th>
+      </tr>
+    </thead> 
+    <tbody>
+      {list.filter(isSearched(pattern)).map(item => 
+        <tr key={item.objectID}>
+          <td><a href={item.url}>{item.title}</a></td>
+          <td>{item.author}</td>
+          <td>{item.num_comments}</td>
+          <td>{item.points}</td>
+          <td><button className="ui button orange" onClick={() => onDismiss(item.objectID)}>Dismiss</button></td>
+        </tr>
+      )}
+    </tbody>
+  </table>
 
 class App extends Component {
   constructor(props) {
@@ -96,11 +94,8 @@ class App extends Component {
         <Clock />
         <div className="ui segment">
           <h2 className="ui header">Documentation List</h2>
-          <div className="ui icon input">
-            <input type="text" placeholder="Search..." value={searchTerm} onChange={this.onSearchChange} />
-            <i className="search icon"></i>
-          </div>
-          <ReactList list={list.filter(isSearched(searchTerm))} onClickFunc={this.removeItem} />
+          <Search value={searchTerm} onChange={this.onSearchChange} />
+          <Table list={list} pattern={searchTerm} onDismiss={this.removeItem} />
         </div>
       </div>
     );
