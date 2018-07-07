@@ -21,8 +21,8 @@ const list = [
 const ReactItem = ({ item, onClickFunc }) => {
   const { title, author, num_comments, points, objectID } = item;
   return (
-    <li>{title} - {author} - {num_comments} - {points} 
-      <button onClick={onClickFunc.bind(undefined, objectID)}>Remove Item</button> 
+    <li className="item">{title} - {author} - {num_comments} - {points} &nbsp;
+      <button className="ui yellow button" onClick={onClickFunc.bind(undefined, objectID)}>Remove Item</button> 
     </li>
   );
 };
@@ -31,7 +31,7 @@ const ReactList = ({ list, onClickFunc }) => {
   const listItems = list.map(item => {
     return <ReactItem key={item.objectID} item={item} onClickFunc={onClickFunc} />;
   });
-  return <ul>{listItems}</ul>;
+  return <ul className="ui list">{listItems}</ul>;
 };
 
 class Clock extends Component {
@@ -56,7 +56,8 @@ class Clock extends Component {
 
   render() {
     return (
-      <div>
+      <div className="ui segment">
+        <h2 className="ui header">Current Time</h2>
         <span>{this.state.date}</span>
       </div>
     )
@@ -86,18 +87,21 @@ class App extends Component {
   }
 
   render() {
+    const { searchTerm, list } = this.state;
     return (
       <div>
-<<<<<<< HEAD
-        <ReactList list={this.state.list} onClickFunc={this.removeItem} />
+        <br />
+        <h1 className="ui header center aligned">Road to React</h1>
+        <br />
         <Clock />
-=======
-        <form>
-          <input type="text" onChange={this.onSearchChange} />
-        </form>
-        <span>{this.state.searchTerm}</span>
-        <ReactList list={this.state.list.filter(isSearched(this.state.searchTerm))} onClickFunc={this.removeItem} />
->>>>>>> d8172cfca5b0d597743add0d509641596b4e7fd8
+        <div className="ui segment">
+          <h2 className="ui header">Documentation List</h2>
+          <div className="ui icon input">
+            <input type="text" placeholder="Search..." value={searchTerm} onChange={this.onSearchChange} />
+            <i className="search icon"></i>
+          </div>
+          <ReactList list={list.filter(isSearched(searchTerm))} onClickFunc={this.removeItem} />
+        </div>
       </div>
     );
   }
