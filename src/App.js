@@ -20,17 +20,6 @@ const list = [
   },
 ];
 
-/*
-const ReactItem = ({ item, onClickFunc }) => {
-  const { title, author, num_comments, points, objectID } = item;
-  return (
-    <li className="item">{title} - {author} - {num_comments} - {points} &nbsp;
-      <button className="ui yellow button" onClick={onClickFunc.bind(undefined, objectID)}>Remove Item</button> 
-    </li>
-  );
-};
-*/
-
 const isSearched = searchTerm => item => item.title.toLowerCase().includes(searchTerm.toLowerCase());
 
 const Search = ({ value, onChange }) =>
@@ -38,6 +27,19 @@ const Search = ({ value, onChange }) =>
     <input type="text" placeholder="Search..." value={value} onChange={onChange} />
     <i className="search icon"></i>
   </div>
+
+const Row = ({ item, dismissFunc }) => {
+  const { objectID, url, title, author, num_comments, points } = item;
+  return (
+    <tr key={objectID}>
+      <td><a href={url}>{title}</a></td>
+      <td>{author}</td>
+      <td>{num_comments}</td>
+      <td>{points}</td>
+      <td><button className="ui button orange" onClick={dismissFunc.bind(undefined, objectID)}>Dismiss</button></td>
+    </tr>
+  );
+}
 
 const Table = ({ list, pattern, onDismiss }) =>
   <table className="ui celled padded table">
@@ -52,13 +54,7 @@ const Table = ({ list, pattern, onDismiss }) =>
     </thead> 
     <tbody>
       {list.filter(isSearched(pattern)).map(item => 
-        <tr key={item.objectID}>
-          <td><a href={item.url}>{item.title}</a></td>
-          <td>{item.author}</td>
-          <td>{item.num_comments}</td>
-          <td>{item.points}</td>
-          <td><button className="ui button orange" onClick={() => onDismiss(item.objectID)}>Dismiss</button></td>
-        </tr>
+        <Row key={item.objectID} item={item} dismissFunc={() => onDismiss(item.objectID)} />
       )}
     </tbody>
   </table>
@@ -93,7 +89,7 @@ class App extends Component {
         <br />
         <Clock />
         <div className="ui segment">
-          <h2 className="ui header">Documentation List</h2>
+          <h2 className="ui header">React Ecosystem</h2>
           <Search value={searchTerm} onChange={this.onSearchChange} />
           <Table list={list} pattern={searchTerm} onDismiss={this.removeItem} />
         </div>
