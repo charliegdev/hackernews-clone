@@ -22,11 +22,15 @@ const list = [
 
 const isSearched = searchTerm => item => item.title.toLowerCase().includes(searchTerm.toLowerCase());
 
-const Search = ({ value, onChange }) =>
-  <div className="ui icon input">
-    <input type="text" placeholder="Search..." value={value} onChange={onChange} />
+const Search = ({ value, onChange, children }) =>
+  <div className="ui icon labeled input">
+    <div className="ui label">{children}</div>
+    <input type="text" placeholder="Title..." value={value} onChange={onChange} />
     <i className="search icon"></i>
   </div>
+
+const Button = ({ onClick, color = "", children }) => 
+  <button onClick={onClick} className={"ui button " + color} type="button">{children}</button>
 
 const Row = ({ item, dismissFunc }) => {
   const { objectID, url, title, author, num_comments, points } = item;
@@ -36,7 +40,7 @@ const Row = ({ item, dismissFunc }) => {
       <td>{author}</td>
       <td>{num_comments}</td>
       <td>{points}</td>
-      <td><button className="ui button orange" onClick={dismissFunc.bind(undefined, objectID)}>Dismiss</button></td>
+      <td><Button color={"orange"} onClick={dismissFunc.bind(undefined, objectID)}>Dismiss</Button></td>
     </tr>
   );
 }
@@ -90,7 +94,7 @@ class App extends Component {
         <Clock />
         <div className="ui segment">
           <h2 className="ui header">React Ecosystem</h2>
-          <Search value={searchTerm} onChange={this.onSearchChange} />
+          <Search value={searchTerm} onChange={this.onSearchChange}>Search the Titles</Search> 
           <Table list={list} pattern={searchTerm} onDismiss={this.removeItem} />
         </div>
       </div>
