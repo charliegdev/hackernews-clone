@@ -30,7 +30,7 @@ const Table = ({ list, pattern, onDismiss }) =>
       </tr>
     </thead> 
     <tbody>
-      {list.filter(isSearched(pattern)).map(item => 
+      {list.map(item => 
         <Row key={item.objectID} item={item} dismissFunc={() => onDismiss(item.objectID)} />
       )}
     </tbody>
