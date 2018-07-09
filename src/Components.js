@@ -1,7 +1,5 @@
 import React from 'react';
 
-const isSearched = searchTerm => item => item.title.toLowerCase().includes(searchTerm.toLowerCase());
-
 const Button = ({ onClick, color = "", children }) => 
   <button onClick={onClick} className={"ui button " + color} type="button">{children}</button>
 

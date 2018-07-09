@@ -46,6 +46,7 @@ class App extends Component {
 
   render() {
     const { searchTerm, result } = this.state;
+    if (result.length === 0) return null;
     return (
       <div>
         <br />
