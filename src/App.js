@@ -26,8 +26,8 @@ class App extends Component {
   }
 
   removeItem(id) {
-    const updatedList = this.state.result.filter(item => item.objectID !== id);
-    this.setState({ result: updatedList });
+    const updatedList = this.state.result.hits.filter(item => item.objectID !== id);
+    this.setState({ result: { ...this.state.result, hits: updatedList } });
   }
 
   onSearchChange(event) {
