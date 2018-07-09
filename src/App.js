@@ -12,7 +12,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      result: [],
+      result: null,
       searchTerm: DEFAULT_QUERY,
     };
 
@@ -32,7 +32,6 @@ class App extends Component {
 
   onSearchChange(event) {
     this.setState({ searchTerm: event.target.value });
-    console.log(this.state.searchTerm);
   }
 
   componentDidMount() {
@@ -40,13 +39,13 @@ class App extends Component {
 
     fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`)
       .then(response => response.json())
-      .then(result => this.setSearchTopStories(result.hits))
+      .then(result => this.setSearchTopStories(result))
       .catch(error => error);
   }
 
   render() {
     const { searchTerm, result } = this.state;
-    if (result.length === 0) return null;
+    if (!result) return null;
     return (
       <div>
         <br />
@@ -56,7 +55,7 @@ class App extends Component {
         <div className="ui segment">
           <h2 className="ui header">React Ecosystem</h2>
           <Search value={searchTerm} onChange={this.onSearchChange}>Search the Titles</Search> 
-          <Table list={result} pattern={searchTerm} onDismiss={this.removeItem} />
+          <Table list={result.hits} pattern={searchTerm} onDismiss={this.removeItem} />
         </div>
       </div>
     );

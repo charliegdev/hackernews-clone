@@ -28,7 +28,7 @@ const Table = ({ list, pattern, onDismiss }) =>
       </tr>
     </thead> 
     <tbody>
-      {list.map(item => 
+      {list.filter(item => item.title.includes(pattern)).map(item => 
         <Row key={item.objectID} item={item} dismissFunc={() => onDismiss(item.objectID)} />
       )}
     </tbody>
