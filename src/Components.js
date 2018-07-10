@@ -1,7 +1,7 @@
 import React from 'react';
 
-const Button = ({ onClick, color = "", children }) => 
-  <button onClick={onClick} className={"ui button " + color} type="button">{children}</button>
+const Button = ({ onClick, color = "", children, type = "button" }) => 
+  <button onClick={onClick} className={"ui button " + color} type={type}>{children}</button>
 
 const Row = ({ item, dismissFunc }) => {
   const { objectID, url, title, author, num_comments, points } = item;
@@ -28,17 +28,18 @@ const Table = ({ list, pattern, onDismiss }) =>
       </tr>
     </thead> 
     <tbody>
-      {list.filter(item => item.title.includes(pattern)).map(item => 
+      {list.filter(item => item.title.toLowerCase().includes(pattern.toLowerCase())).map(item => 
         <Row key={item.objectID} item={item} dismissFunc={() => onDismiss(item.objectID)} />
       )}
     </tbody>
   </table>
 
-const Search = ({ value, onChange, children }) =>
-  <div className="ui icon labeled input">
+const Search = ({ value, onChange, onSubmit, children }) =>
+  <form className="ui icon labeled input" onSubmit={onSubmit}>
     <div className="ui label">{children}</div>
     <input type="text" placeholder="Title..." value={value} onChange={onChange} />
-    <i className="search icon"></i>
-  </div>
+    &nbsp;
+    <Button type="submit" onClick={onSubmit} color="blue">Search</Button>
+  </form>
 
 export { Table, Search };

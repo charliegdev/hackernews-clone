@@ -18,7 +18,9 @@ class App extends Component {
 
     this.removeItem = this.removeItem.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
+    this.onSearchSubmit = this.onSearchSubmit.bind(this);
     this.setSearchTopStories = this.setSearchTopStories.bind(this);
+    this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
   }
 
   setSearchTopStories(result) {
@@ -34,9 +36,19 @@ class App extends Component {
     this.setState({ searchTerm: event.target.value });
   }
 
+  onSearchSubmit(event) {
+    event.preventDefault();
+    const { searchTerm } = this.state;
+    this.fetchSearchTopStories(searchTerm);
+  }
+
   componentDidMount() {
     const { searchTerm } = this.state;
 
+    this.fetchSearchTopStories(searchTerm);
+  }
+
+  fetchSearchTopStories(searchTerm) {
     fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`)
       .then(response => response.json())
       .then(result => this.setSearchTopStories(result))
@@ -45,7 +57,6 @@ class App extends Component {
 
   render() {
     const { searchTerm, result } = this.state;
-    if (!result) return null;
     return (
       <div>
         <br />
@@ -54,8 +65,10 @@ class App extends Component {
         <Clock />
         <div className="ui segment">
           <h2 className="ui header">React Ecosystem</h2>
-          <Search value={searchTerm} onChange={this.onSearchChange}>Search the Titles</Search> 
-          <Table list={result.hits} pattern={searchTerm} onDismiss={this.removeItem} />
+          <Search value={searchTerm} onChange={this.onSearchChange} onSubmit={this.onSearchSubmit}>Search the Titles</Search> 
+          { result && 
+            <Table list={result.hits} pattern={searchTerm} onDismiss={this.removeItem} />
+          }
         </div>
       </div>
     );
