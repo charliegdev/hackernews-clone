@@ -25,7 +25,12 @@ class App extends Component {
   }
 
   setSearchTopStories(result) {
-    this.setState({ result });
+    this.setState(prevState => {
+      if (!prevState.result) return { result };
+      const mergedHits = [ ...(prevState.result.hits), ...(result.hits) ];
+      const newResult = { ...result, page: result.page, hits: mergedHits };
+      return { result: newResult }; 
+    });
   }
 
   removeItem(id) {
