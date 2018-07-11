@@ -26,7 +26,8 @@ class App extends Component {
 
   setSearchTopStories(result) {
     this.setState(prevState => {
-      if (!prevState.result) return { result };
+      if (!prevState.result) return { result }; // Initial page load
+      if (result.page === 0) return { result }; // A new search
       const mergedHits = [ ...(prevState.result.hits), ...(result.hits) ];
       const newResult = { ...result, page: result.page, hits: mergedHits };
       return { result: newResult }; 
