@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import Clock from './Clock';
-import { Table, Search } from './Components';
+import { Button, Table, Search } from './Components';
 
 const DEFAULT_QUERY = 'redux';
 const PATH_BASE = 'https://hn.algolia.com/api/v1';
 const PATH_SEARCH = '/search';
 const PARAM_SEARCH = 'query=';
+const PARAM_PAGE = 'page=';
 
 class App extends Component {
   constructor(props) {
@@ -48,8 +49,8 @@ class App extends Component {
     this.fetchSearchTopStories(searchTerm);
   }
 
-  fetchSearchTopStories(searchTerm) {
-    fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`)
+  fetchSearchTopStories(searchTerm, page = 0) {
+    fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}`)
       .then(response => response.json())
       .then(result => this.setSearchTopStories(result))
       .catch(error => error);
@@ -57,6 +58,7 @@ class App extends Component {
 
   render() {
     const { searchTerm, result } = this.state;
+    const currentPage = (result && result.page) || 0;
     return (
       <div>
         <br />
@@ -67,8 +69,9 @@ class App extends Component {
           <h2 className="ui header">React Ecosystem</h2>
           <Search value={searchTerm} onChange={this.onSearchChange} onSubmit={this.onSearchSubmit}>Search the Titles</Search> 
           { result && 
-            <Table list={result.hits} pattern={searchTerm} onDismiss={this.removeItem} />
+            <Table list={result.hits} onDismiss={this.removeItem} />
           }
+          <Button color="green" onClick={() => this.fetchSearchTopStories(searchTerm, currentPage + 1)}>Next 20 Stories</Button>
         </div>
       </div>
     );

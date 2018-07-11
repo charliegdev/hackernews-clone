@@ -28,7 +28,7 @@ const Table = ({ list, pattern, onDismiss }) =>
       </tr>
     </thead> 
     <tbody>
-      {list.filter(item => item.title.toLowerCase().includes(pattern.toLowerCase())).map(item => 
+      {list.map(item => 
         <Row key={item.objectID} item={item} dismissFunc={() => onDismiss(item.objectID)} />
       )}
     </tbody>
@@ -42,4 +42,4 @@ const Search = ({ value, onChange, onSubmit, children }) =>
     <Button type="submit" onClick={onSubmit} color="blue">Search</Button>
   </form>
 
-export { Table, Search };
+export { Button, Table, Search };
