@@ -23,6 +23,11 @@ class App extends Component {
     this.onSearchSubmit = this.onSearchSubmit.bind(this);
     this.setSearchTopStories = this.setSearchTopStories.bind(this);
     this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
+    this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
+  }
+
+  needsToSearchTopStories(searchTerm) {
+    return !this.state.results[searchTerm];
   }
 
   setSearchTopStories(result) {
@@ -42,8 +47,16 @@ class App extends Component {
   }
 
   removeItem(id) {
-    const updatedList = this.state.result.hits.filter(item => item.objectID !== id);
-    this.setState({ result: { ...this.state.result, hits: updatedList } });
+    const { searchKey, results } = this.state;
+    const { hits, page } = results[searchKey];
+
+    const updatedList = hits.filter(item => item.objectID !== id);
+    this.setState({ 
+      results: { 
+        ...results, 
+        [searchKey]: { hits: updatedList, page } 
+      } 
+    });
   }
 
   onSearchChange(event) {
@@ -52,14 +65,12 @@ class App extends Component {
 
   onSearchSubmit(event) {
     event.preventDefault();
-    this.attemptSearch();
+    const { searchTerm } = this.state;
+    this.setState({ searchKey: searchTerm });
+    if (this.needsToSearchTopStories(searchTerm)) this.fetchSearchTopStories(searchTerm);
   }
 
   componentDidMount() {
-    this.attemptSearch();
-  }
-
-  attemptSearch() {
     const { searchTerm } = this.state;
     this.setState({ searchKey: searchTerm });
     this.fetchSearchTopStories(searchTerm);
