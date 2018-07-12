@@ -13,7 +13,8 @@ class App extends Component {
     super(props);
 
     this.state = {
-      result: null,
+      results: null,
+      searchKey: '',
       searchTerm: DEFAULT_QUERY,
     };
 
@@ -25,12 +26,18 @@ class App extends Component {
   }
 
   setSearchTopStories(result) {
-    this.setState(prevState => {
-      if (!prevState.result) return { result }; // Initial page load
-      if (result.page === 0) return { result }; // A new search
-      const mergedHits = [ ...(prevState.result.hits), ...(result.hits) ];
-      const newResult = { ...result, page: result.page, hits: mergedHits };
-      return { result: newResult }; 
+    // 'result' is the new result that just got pulled from the API.
+    const { hits, page } = result;
+    const { searchKey, results } = this.state;
+
+    const oldHits = results && results[searchKey] ? results[searchKey].hits : [];
+    const updatedHits = [...oldHits, ...hits];
+
+    this.setState({
+      results: {
+        ...results,
+        [searchKey]: { hits: updatedHits, page }
+      }
     });
   }
 
@@ -45,13 +52,16 @@ class App extends Component {
 
   onSearchSubmit(event) {
     event.preventDefault();
-    const { searchTerm } = this.state;
-    this.fetchSearchTopStories(searchTerm);
+    this.attemptSearch();
   }
 
   componentDidMount() {
-    const { searchTerm } = this.state;
+    this.attemptSearch();
+  }
 
+  attemptSearch() {
+    const { searchTerm } = this.state;
+    this.setState({ searchKey: searchTerm });
     this.fetchSearchTopStories(searchTerm);
   }
 
@@ -63,8 +73,9 @@ class App extends Component {
   }
 
   render() {
-    const { searchTerm, result } = this.state;
-    const currentPage = (result && result.page) || 0;
+    const { searchTerm, results, searchKey } = this.state;
+    const currentPage = (results && results[searchKey] && results[searchKey].page) || 0;
+    const list = (results && results[searchKey] && results[searchKey].hits) || [];
     return (
       <div>
         <br />
@@ -74,10 +85,8 @@ class App extends Component {
         <div className="ui segment">
           <h2 className="ui header">React Ecosystem</h2>
           <Search value={searchTerm} onChange={this.onSearchChange} onSubmit={this.onSearchSubmit}>Search the Titles</Search> 
-          { result && 
-            <Table list={result.hits} onDismiss={this.removeItem} />
-          }
-          <Button color="green" onClick={() => this.fetchSearchTopStories(searchTerm, currentPage + 1)}>Next 20 Stories</Button>
+          <Table list={list} onDismiss={this.removeItem} />
+          <Button color="green" onClick={() => this.fetchSearchTopStories(searchKey, currentPage + 1)}>Next 20 Stories</Button>
         </div>
       </div>
     );
