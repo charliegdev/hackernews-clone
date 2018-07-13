@@ -16,6 +16,7 @@ class App extends Component {
       results: null,
       searchKey: '',
       searchTerm: DEFAULT_QUERY,
+      error: null
     };
 
     this.removeItem = this.removeItem.bind(this);
@@ -80,11 +81,11 @@ class App extends Component {
     fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}`)
       .then(response => response.json())
       .then(result => this.setSearchTopStories(result))
-      .catch(error => error);
+      .catch(error => this.setState({ error }));
   }
 
   render() {
-    const { searchTerm, results, searchKey } = this.state;
+    const { searchTerm, results, searchKey, error } = this.state;
     const currentPage = (results && results[searchKey] && results[searchKey].page) || 0;
     const list = (results && results[searchKey] && results[searchKey].hits) || [];
     return (
@@ -96,7 +97,11 @@ class App extends Component {
         <div className="ui segment">
           <h2 className="ui header">React Ecosystem</h2>
           <Search value={searchTerm} onChange={this.onSearchChange} onSubmit={this.onSearchSubmit}>Search the Titles</Search> 
-          <Table list={list} onDismiss={this.removeItem} />
+          { error ? 
+            <p>Something went wrong.</p>
+            :
+            <Table list={list} onDismiss={this.removeItem} />
+          }
           <Button color="green" onClick={() => this.fetchSearchTopStories(searchKey, currentPage + 1)}>Next 20 Stories</Button>
         </div>
       </div>
